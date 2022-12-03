@@ -21,3 +21,4 @@ use Illuminate\Support\Facades\Route;
 
 
 Route::apiResource('posts', PostController::class);
+Route::post('posts/{post}/restore', [PostController::class, 'restore'])->name('posts.restore');

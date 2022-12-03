@@ -42,9 +42,9 @@ class PostController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Post $post)
     {
-        
+        return PostResource::make($post);
     }
 
     /**
@@ -54,9 +54,15 @@ class PostController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(PostRequest $request, Post $post)
     {
-        //
+        $data = $request->validated();
+        $status = $post->update($data);
+
+        return $this->jsonResponse([
+            'success' => $status,
+            'post' => PostResource::make($post)
+        ]);
     }
 
     /**
@@ -67,6 +73,34 @@ class PostController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $postModel = Post::withTrashed()->findOrFail($id);
+
+        if ($postModel->trashed()) {
+            $status = $postModel->forceDelete();
+
+            return $this->jsonResponse([
+                'success' => $status,
+            ]);
+        }
+
+        $status = $postModel->delete();
+
+        return $this->jsonResponse([
+            'success' => $status,
+        ]);
+    }
+
+    public function restore($id)
+    {
+        $postModel = Post::withTrashed()->findOrFail($id);
+
+        if ($postModel) {
+            $status = $postModel->restore();
+        }
+
+        return $this->jsonResponse([
+            'success' => $status,
+            'post' => PostResource::make($postModel)
+        ]);
     }
 }
