@@ -54,14 +54,14 @@ class PostController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(PostRequest $request, Post $post)
+    public function update(PostRequest $request, Post $postModel)
     {
         $data = $request->validated();
-        $status = $post->update($data);
+        $status = $postModel->update($data);
 
         return $this->jsonResponse([
             'success' => $status,
-            'post' => PostResource::make($post)
+            'post' => PostResource::make($postModel)
         ]);
     }
 
