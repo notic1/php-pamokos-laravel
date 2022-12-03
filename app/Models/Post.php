@@ -9,8 +9,22 @@ class Post extends Model
 {
     use HasFactory;
 
+    const A_USER_ID = 'user_id';
+    const A_TITLE = 'title';
+    const A_BODY = 'body';
+
+    protected $fillable = [
+        self::A_TITLE,
+        self::A_BODY
+    ];
+
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function setUser(int $userId)
+    {
+        $this->{self::A_USER_ID} = $userId;
     }
 }
